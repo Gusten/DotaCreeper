@@ -13,23 +13,29 @@ import {
 } from 'react-native';
 
 var steamApiKey = "6F39056ADA5041ED08F9480773890A58";
+var RNFS = require('react-native-fs');
 
 class DotaCreeper extends Component {
-  componentDidMount() {
-	  this.interval = setInterval(refresh, 15000);
-  }	
-  
-  componentWillUnmount() {
-	  clearInterval(this.interval);
-  }
   
   refresh() {
 	fetch("https://api.steampowered.com/IDOTA2Match_570/GetLiveLeagueGames/v1/?key=" + steamApiKey)
 		.then((response) => response.json())
 		.then((responseData) => {
-			console.log(responseData.result.games)
+			for(var i = 0; i < responseData.result.games.length; i++){
+				if(responseData.result.games[i].hasOwnProperty("radiant_team")) {
+					//console.log(responseData.result.games[i]["radiant_team"]["team_name"])
+				}
+			}
 		})
 	.done();
+  }	
+	
+  componentDidMount() {
+	  this.interval = setInterval(this.refresh, 15000);
+  }	
+  
+  componentWillUnmount() {
+	  clearInterval(this.interval);
   }
 
   render() {
